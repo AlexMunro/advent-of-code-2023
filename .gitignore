@@ -1,0 +1,7 @@
+# -- Cabal generated files
+dist*
+cabal-dev
+.ghc.environment*
+
+# -- Player specific Advent of Code inputs
+inputs/
