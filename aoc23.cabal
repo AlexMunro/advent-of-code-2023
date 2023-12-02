@@ -37,7 +37,7 @@ maintainer:          AlexMunro@users.noreply.github.com
 
 -- Extra files to be distributed with the package, such as examples or a
 -- README.
-extra-source-files:  CHANGELOG.md
+-- extra-source-files:  CHANGELOG.md
 
 
 executable aoc23-Day01
@@ -51,7 +51,7 @@ executable aoc23-Day01
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base ^>=4.13.0.0
+  build-depends:       base ^>=4.13.0.0, regex-tdfa
 
   -- Directories containing source files.
   hs-source-dirs:      solutions/day01
@@ -76,5 +76,5 @@ test-suite aoc23-Day01-test
   other-modules:       Day01
 
   -- Test dependencies.
-  build-depends:       base ^>=4.13.0.0, hspec == 2.11.7
+  build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, regex-tdfa
 
