@@ -14,4 +14,7 @@ main = hspec $ do
     describe "partOne" $ do
       it "sums the IDs of games that can be played with 12 red, 13 green and 14 blue cubes" $ do
         partOne input `shouldBe` 8 
-
+    
+    describe "partTwo" $ do
+      it "sums the powers of minimal sets of cubes for each game" $ do
+        partTwo input `shouldBe` 2286 

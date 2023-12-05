@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module Day02 (partOne) where
+module Day02 (partOne, partTwo) where
 
 -- with thanks to https://jsdw.me/posts/haskell-parsec-basics/
 
@@ -59,9 +59,17 @@ maxOfColour game selectColour = maximum ballCountsOfSelectColour
 validBallCounts :: Game -> Bool
 validBallCounts game = maxOfColour game Red <= 12 && maxOfColour game Green <= 13 && maxOfColour game Blue <= 14  
 
+minSet :: Game -> [Int]
+minSet game = [maxOfColour game Red, maxOfColour game Green, maxOfColour game Blue]
+
 partOne :: [String] -> Int
 partOne input = do
   case parseAllGames input of
     Right games -> sum $ Day02.id <$> filter validBallCounts games
     Left err -> -1
 
+partTwo :: [String] -> Int
+partTwo input = do
+  case parseAllGames input of
+    Right games -> sum $ product <$> minSet <$> games
+    Left err -> -1
