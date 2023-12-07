@@ -15,4 +15,7 @@ main = hspec $ do
     describe "partOne" $ do
       it "sums the scores on all the cards" $ do
         partOne input `shouldBe` 13
- 
+    
+    describe "partTwo" $ do
+      it "returns the number of cards" $ do
+        partTwo input `shouldBe` 30

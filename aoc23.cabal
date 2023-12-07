@@ -116,6 +116,7 @@ test-suite aoc23-Day02-test
   -- Test dependencies.
   build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, parsec ^>=3.1.17.0, mtl ^>=2.2.2
 
+
 executable aoc23-Day04
   -- .hs or .lhs file containing the Main module.
   main-is:             Main.hs
@@ -127,7 +128,7 @@ executable aoc23-Day04
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base ^>=4.13.0.0, regex-tdfa, parsec ^>=3.1.17.0, mtl ^>=2.2.2
+  build-depends:       base ^>=4.13.0.0, parsec ^>=3.1.17.0, mtl ^>=2.2.2, containers ^>= 0.6.2.1
 
   -- Directories containing source files.
   hs-source-dirs:      solutions/day04
@@ -152,6 +153,6 @@ test-suite aoc23-Day04-test
   other-modules:       Day04
 
   -- Test dependencies.
-  build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, parsec ^>=3.1.17.0, mtl ^>=2.2.2
+  build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, parsec ^>=3.1.17.0, mtl ^>=2.2.2, containers ^>= 0.6.2.1
 
 

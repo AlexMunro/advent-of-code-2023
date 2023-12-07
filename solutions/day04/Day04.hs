@@ -1,9 +1,10 @@
 
 {-# LANGUAGE FlexibleContexts #-}
 
-module Day04 (partOne) where
+module Day04 (partOne, partTwo) where
 
 import Data.List
+import qualified Data.Map as Map
 
 import qualified Text.Parsec as Parsec
 import Text.Parsec ((<?>))
@@ -35,14 +36,35 @@ parseCard = do
 parseAllCards :: [String] -> Either Parsec.ParseError [Card]
 parseAllCards cardListings = sequence $ parse parseCard <$> cardListings
 
+correctlySelectedNumbers :: Card -> Int
+correctlySelectedNumbers card = length $ (winningNumbers card) `intersect` (myNumbers card)
+
 score :: Card -> Int
 score card
-  | correctlySelectedNumbers > 0 = 2^(correctlySelectedNumbers -1)
+  | correctlySelectedNumberCount > 0 = 2^(correctlySelectedNumberCount -1)
   | otherwise = 0
-  where correctlySelectedNumbers = length $ (winningNumbers card) `intersect` (myNumbers card)
+  where correctlySelectedNumberCount = correctlySelectedNumbers card
+
+cardMap :: [Card] -> Map.Map Int Card
+cardMap cards = Map.fromList $ map (\card -> ((cardNo card), card)) cards
+
+resultingCards :: Int -> Map.Map Int Card -> [Card]
+resultingCards cardNo cardMap = case Map.lookup cardNo cardMap of
+  Just card -> card : concat [resultingCards n cardMap | n <- [cardNo+1..cardNo + (correctlySelectedNumbers card)]]
+  Nothing -> []
+
+totalResultingCards :: [Card] -> [Card]
+totalResultingCards cards = concat $ map (\n -> resultingCards n (cardMap cards)) initialCorrectNumbers
+  where initialCorrectNumbers = map cardNo cards
 
 partOne :: [String] -> Int
 partOne input = do
   case parseAllCards input of
     Right cards -> sum $ score <$> cards
+    Left err -> -1
+
+partTwo :: [String] -> Int
+partTwo input = do
+  case parseAllCards input of
+    Right cards -> length $ totalResultingCards cards
     Left err -> -1
