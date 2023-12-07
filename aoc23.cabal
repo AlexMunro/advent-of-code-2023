@@ -155,4 +155,42 @@ test-suite aoc23-Day04-test
   -- Test dependencies.
   build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, parsec ^>=3.1.17.0, mtl ^>=2.2.2, containers ^>= 0.6.2.1
 
+executable aoc23-Day06
+  -- .hs or .lhs file containing the Main module.
+  main-is:             Main.hs
+
+  -- Modules included in this executable, other than Main.
+  other-modules:       Day06
+
+  -- LANGUAGE extensions used by modules in this package.
+  -- other-extensions:
+
+  -- Other library packages from which modules are imported.
+  build-depends:       base ^>=4.13.0.0, regex-tdfa, parsec ^>=3.1.17.0, mtl ^>=2.2.2
+
+  -- Directories containing source files.
+  hs-source-dirs:      solutions/day06
+
+  -- Base language which the package is written in.
+  default-language:    Haskell2010
+
+
+test-suite aoc23-Day06-test
+  -- Base language which the package is written in.
+  default-language:    Haskell2010
+
+  -- The interface type and version of the test suite.
+  type:                exitcode-stdio-1.0
+
+  -- The directory where the test specifications are found.
+  hs-source-dirs:      specs, solutions/day06
+
+  -- The entrypoint to the test suite.
+  main-is:             Day06Spec.hs
+
+  other-modules:       Day06
+
+  -- Test dependencies.
+  build-depends:       base ^>=4.13.0.0, hspec ^>= 2.11.7, parsec ^>=3.1.17.0, mtl ^>=2.2.2
+
 
