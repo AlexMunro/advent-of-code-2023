@@ -15,3 +15,6 @@ main = hspec $ do
       it "returns the total winnings" $ do
         partOne input `shouldBe` 6440
 
+    describe "partTwo" $ do
+      it "returns the total winnings with the joker rule" $ do
+        partTwo input `shouldBe` 5905
