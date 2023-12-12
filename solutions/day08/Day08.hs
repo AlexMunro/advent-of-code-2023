@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module Day08 (partOne) where
+module Day08 (partOne, partTwo) where
 
 import qualified Data.Map as Map
 import Data.Maybe
@@ -25,11 +25,11 @@ readInstructions instrChars = catMaybes $ readInstr <$> instrChars
 
 parseNodes :: Parsec.Parsec String () (String, Node)
 parseNodes = do
-  self <- Parsec.many1 Parsec.letter
+  self <- Parsec.many1 (Parsec.letter <|> Parsec.digit)
   Parsec.string " = ("
-  left <- Parsec.many1 Parsec.letter
+  left <- Parsec.many1 (Parsec.letter <|> Parsec.digit)
   Parsec.string ", "
-  right <- Parsec.many1 Parsec.letter
+  right <- Parsec.many1 (Parsec.letter <|> Parsec.digit)
   Parsec.string ")"
   return $ (self, Node left right)
 
@@ -48,8 +48,31 @@ navigateNodes instructions nodeMap current steps = navigateNodes instructions no
           GoLeft -> left
           GoRight -> right
 
+lcmMulti :: [Int] -> Int
+lcmMulti = foldr lcm 1 -- hah, I can't believe this exists in the prelude!
+
+navigateNodesToZ :: [Instruction] -> Map.Map String Node -> String -> Int -> Int
+navigateNodesToZ instructions nodeMap current steps
+  | last current == 'Z' = steps
+  | otherwise = navigateNodesToZ instructions nodeMap nextLoc (steps + 1)
+  where nextLoc = dir currentNode
+        currentNode = nodeMap Map.! current
+        dir = case instructions !! (steps `mod` length instructions) of
+          GoLeft -> left
+          GoRight -> right
+
+navigateAllNodes :: [Instruction] -> Map.Map String Node -> Int
+navigateAllNodes instructions nodeMap = lcmMulti $ map (\node -> navigateNodesToZ instructions nodeMap node 0) startingNodes
+  where startingNodes = filter (\s -> last s == 'A') (Map.keys nodeMap)
+
 partOne :: [String] -> Int
 partOne input = do
   case parseNodeMap (drop 2 input) of
     Right nodeMap -> navigateNodes (readInstructions $ head input) nodeMap "AAA" 0
+    Left err -> -1
+
+partTwo :: [String] -> Int
+partTwo input = do
+  case parseNodeMap (drop 2 input) of
+    Right nodeMap -> navigateAllNodes (readInstructions $ head input) nodeMap
     Left err -> -1
