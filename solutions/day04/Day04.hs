@@ -49,9 +49,8 @@ cardMap :: [Card] -> Map.Map Int Card
 cardMap cards = Map.fromList $ map (\card -> ((cardNo card), card)) cards
 
 resultingCards :: Int -> Map.Map Int Card -> [Card]
-resultingCards cardNo cardMap = case Map.lookup cardNo cardMap of
-  Just card -> card : concat [resultingCards n cardMap | n <- [cardNo+1..cardNo + (correctlySelectedNumbers card)]]
-  Nothing -> []
+resultingCards cardNo cardMap = case Map.lookup cardNo cardMap ouf
+  Just card -> card : concat [resultingCards n cardMap | n <- [cardNo+1..cardNo + (correctlySelectedNumbers   Nothing -> []
 
 totalResultingCards :: [Card] -> [Card]
 totalResultingCards cards = concat $ map (\n -> resultingCards n (cardMap cards)) initialCorrectNumbers
