@@ -20,4 +20,8 @@ main = hspec $ do
       it "sums all of the part numbers" $ do
         partOne input `shouldBe` 4361
 
-    
+    describe "partTwo" $ do
+      it "multiplies the two gear numbers" $ do
+        partTwo input `shouldBe` 467835
+
+

@@ -1,17 +1,17 @@
-module Day03 (partOne) where
+module Day03 (partOne, partTwo) where
 
 import Data.Char
-import qualified Data.Set as Set
+import qualified Data.Map as Map
 
 data IdentifiedNumber = IdentifiedNumber { value :: Int
                                          , line :: Int
                                          , start :: Int
                                          , end :: Int } deriving (Show)
 
-symbolsFromLine :: ([Char], Int) -> Set.Set (Int, Int)
-symbolsFromLine (line, lineNumber) = Set.fromList $ formatForSet <$> filter validSymbol (zip line [0..])
+symbolsFromLine :: ([Char], Int) -> Map.Map (Int, Int) Char
+symbolsFromLine (line, lineNumber) = Map.fromList $ formatForMap <$> filter validSymbol (zip line [0..])
   where validSymbol (c, _) = not (c == '.' || isDigit c || isAlpha c)
-        formatForSet (_, idx) = (idx, lineNumber)
+        formatForMap (c, idx) = ((idx, lineNumber), c)
 
 numbersFromLine :: ([Char], Int) -> [IdentifiedNumber]
 numbersFromLine (line, lineNo) = numbersRec line 0 "" (-1) []
@@ -26,23 +26,44 @@ numbersFromLine (line, lineNo) = numbersRec line 0 "" (-1) []
             in numbersRec xs (pos + 1) "" (-1) (newNum: numbers)
           else numbersRec xs (pos + 1) "" (-1) numbers
   
-parseInput :: [String] -> (Set.Set (Int, Int), [IdentifiedNumber])
+parseInput :: [String] -> (Map.Map (Int, Int) Char, [IdentifiedNumber])
 parseInput input = (symbolsFromLines, numbersFromLines)
-  where symbolsFromLines = Set.unions $ map symbolsFromLine zippedInput
+  where symbolsFromLines = Map.unions $ map symbolsFromLine zippedInput
         numbersFromLines = foldr (++) [] (map numbersFromLine zippedInput)
         zippedInput = zip input [0..]
 
-isAdjacentToSymbol :: Set.Set(Int, Int) -> IdentifiedNumber -> Bool
+isAdjacentToSymbol :: Map.Map (Int, Int) Char -> IdentifiedNumber -> Bool
 isAdjacentToSymbol symbolPoints number = any isSymbol [(x, y) | x <- xRange, y <- yRange]
-  where isSymbol loc = Set.member loc symbolPoints
+  where isSymbol loc = Map.member loc symbolPoints
         xRange = [(start number -1)..(end number + 1)]
         yRange = [(line number - 1)..(line number + 1)]
-        
+
+isGear :: Map.Map (Int, Int) Char -> IdentifiedNumber -> Bool
+isGear symbolPoints number = (length $ filter isGearSym [(x, y) | x <- xRange, y <- yRange]) == 2
+  where isGearSym loc = Map.lookup loc symbolPoints == Just '*'
+        xRange = [(start number -1)..(end number + 1)]
+        yRange = [(line number -1)..(line number + 1)]
+
 partNumbers :: [String] -> [IdentifiedNumber]
 partNumbers input = filter (isAdjacentToSymbol symbolPoints) numbers
   where (symbolPoints, numbers) = parseInput input
-  
+
+adjacentNumbers :: (Int, Int) -> [IdentifiedNumber] -> [Int]
+adjacentNumbers (x, y) numbers = value <$> filter (isAdjacentToNumber (x, y)) numbers
+
+isAdjacentToNumber :: (Int, Int) -> IdentifiedNumber -> Bool
+isAdjacentToNumber (x, y) number = x `elem` [(start number - 1)..(end number + 1)] && y `elem` [(line number - 1)..(line number + 1)]
+
+gearRatios :: [String] -> [Int]
+gearRatios input = map product actualGears
+  where (symbolPoints, numbers) = parseInput input
+        potentialGears = Map.keys $ Map.filter (== '*') symbolPoints
+        adjacentToEachGear = map (\g -> adjacentNumbers g numbers) potentialGears
+        actualGears = filter (\adj -> length adj == 2) adjacentToEachGear
 
 partOne :: [String] -> Int
 partOne input = sum $ value <$> partNumbers input 
+
+partTwo :: [String] -> Int
+partTwo input = sum $ gearRatios input
 
